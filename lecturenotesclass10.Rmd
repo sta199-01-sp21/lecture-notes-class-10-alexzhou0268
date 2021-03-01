@@ -167,21 +167,29 @@ Perform a simulation to compute this empirical probability.
 
 Write down your guess to the answer before you calculate it.
 
+Guess: I believe that the possibility of the absolute value of the difference between 1 and 2 is equal to 4.
+
 ```{r simulate_rolls}
-dice <- c("1", "2", "3", "4", "5", "6")
+dice <- c(1, 2, 3, 4, 5,6)
 dice_solution <- tibble(
   dice1 = sample(dice, size = 1000, replace = TRUE),
   dice2 = sample(dice, size = 1000, replace = TRUE)
 )
-dice_solution
 ```
 
 ```{r identify_events}
-
+dice_solution <-dice_solution %>% 
+  mutate(
+         equal_roll = dice1*dice1 == dice2,
+         greater_than_4 = abs(dice2-dice1)==4)
 ```
 
 ```{r summarize_rolls}
-
+dice_solution %>%
+  count(equal_roll, greater_than_4) %>%
+  mutate(probability = n/sum(n)) %>%
+  filter(equal_roll == TRUE | greater_than_4 == TRUE) %>%
+  select(equal_roll, greater_than_4, probability)
 ```
 
 ## Additional Resources-please look at before Weds.
